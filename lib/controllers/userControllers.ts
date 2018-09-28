@@ -41,7 +41,7 @@ export let signUpPost = (req : Request, res : Response) => {
     } else {
       res
         .status(200)
-        .json("Account has been created!")
+        .json("successfully registered")
     }
   });
 };
