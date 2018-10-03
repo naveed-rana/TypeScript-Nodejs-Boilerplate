@@ -1,60 +1,142 @@
-import * as request from "supertest";
+import * as chai from 'chai';
+import chaiHttp = require('chai-http');
+import 'mocha';
 import App from '../lib/app';
 
 
 //test post signup req in user route
 
-describe('POST /users', function() {
-  it('responds with json', function(done) {
-    request(App)
-      .post('/user/signup')
-      .send({name: 'naveed',email:'rana.naveed812@gmail.com',password:'124'})
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
-        done();
-      });
-  });
-});
 
+chai.use(chaiHttp);
+const should = chai.should();
 
-//test /user route is working or not
-describe("GET /Api", () => {
-  it("should return 200 OK", () => {
-    return request(App).get("/user")
-      .expect(200);
-  });
-});
+let login = {
+
+  email: "asif@asif",
+  password: "asif"
+}
+
+let signup = {
+  name: "asif",
+  email: "asif@mail",
+  password: "asif"
+}
 
 
 
-//test post Login req in user route
 
-describe('POST /users/login', function() {
-  it('responds with json', function(done) {
-    request(App)
+
+describe('/POST login', () => {
+  it('it should Login, and check token', (done) => {
+    chai.request(App)
       .post('/user/login')
-      .send({email:'rana.naveed812@gmail.com',password:'124'})
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
+      .send(login)
+      .end((err, res) => {
+        if (err) {
+          console.log(err)
+        }
+        res.should.have.status(200);
+        should.exist(res.body);
+        res.body.should.be.a('object');
+        res.body.should.have.property('email');
+        res.body.should.have.property('password');
         done();
-      });
-  });
-});
+      })
 
-//test post Logout req in user route
-describe('POST logout test', function() {
-  it('responds with json', function(done) {
-    request(App)
-      .post('/user/logout')
-      .expect(200)
-      .end(function(err, res) {
-        if (err) return done(err);
+  })
+})
+
+
+
+describe('/POST login', () => {
+  it('if the user is unAuthorized', (done) => {
+    let user = {
+      email: "something",
+      password: "something"
+    }
+    chai.request(App)
+      .post('/user/login')
+      .send(user)
+      .end((err, res) => {
+        if (err) {
+          console.log(err)
+        }
+        res.should.have.status(401);
+
         done();
-      });
-  });
-});
+      })
+
+  })
+})
+
+describe('/POST login', () => {
+  it('if the user send less details', (done) => {
+    let user = {
+      email: "something",
+
+    }
+    chai.request(App)
+      .post('/user/login')
+      .send(user)
+      .end((err, res) => {
+        if (err) {
+          console.log(err)
+        }
+        res.should.have.status(400);
+        done();
+      })
+
+  })
+})
+
+describe('/POST login', () => {
+  it('if the user send empty fields', (done) => {
+    let user = {
+      email: "",
+      password: "asif"
+
+    }
+    chai.request(App)
+      .post('/user/login')
+      .send(user)
+      .end((err, res) => {
+        if (err) {
+          console.log(err)
+        }
+        res.should.have.status(400);
+        done();
+      })
+
+  })
+})
+
+
+
+
+
+
+
+
+
+describe("Add a new User", () => {
+  it("should post a todo", (done) => {
+
+    chai.request(App)
+      .post('/user/login')
+      .send(signup)
+      .end((err, res) => {
+        if (err) {
+          console.log(err);
+
+        }
+        res.should.have.status(200);
+        done();
+      })
+  })
+})
+
+
+
 
 
 

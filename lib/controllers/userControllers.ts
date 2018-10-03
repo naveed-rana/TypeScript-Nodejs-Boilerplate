@@ -32,6 +32,7 @@ export let authUser = (req : Request, res : Response) => {
 
 //SignUp controller
 export let signUpPost = (req : Request, res : Response) => {
+  
   let newUser = new usersModels(req.body);
   newUser.save((err, user) => {
     if (err) {
@@ -41,7 +42,7 @@ export let signUpPost = (req : Request, res : Response) => {
     } else {
       res
         .status(200)
-        .json("Account has been created!")
+        .json("successfully registered")
     }
   });
 };

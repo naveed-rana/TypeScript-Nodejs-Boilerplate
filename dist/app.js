@@ -1,32 +1,29 @@
-import * as express from "express";
-import * as bodyParser from "body-parser";
-import * as mongoose from "mongoose";
-import * as session from 'express-session';
-import * as cookieparser from 'cookie-parser';
-import * as passport from 'passport';
-import setuppassport from './config/Passport';
-import usersRouter from './routes/users';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const cookieparser = require("cookie-parser");
+const passport = require("passport");
+const Passport_1 = require("./config/Passport");
+const users_1 = require("./routes/users");
 var dbURI = require('./config/key');
-
 //creating App
 const App = express();
-App.use(bodyParser.urlencoded({extended: true}));
-
+App.use(bodyParser.urlencoded({ extended: true }));
 // Body Parser implement
 App.use(bodyParser.json());
-App.use(session({secret: "@#^&$!#_)(@!#)**(@^%*&^*#${}|{@#$@#$(#@", resave: true, saveUninitialized: true}));
-
+App.use(session({ secret: "@#^&$!#_)(@!#)**(@^%*&^*#${}|{@#$@#$(#@", resave: true, saveUninitialized: true }));
 App.use(cookieparser());
-
 //connect with mongoose
 mongoose.connect(dbURI, {
     useNewUrlParser: true
 }, function (err) {
-    if (err) 
+    if (err)
         throw err;
     console.log('Successfully connected');
 });
-
 //setup cors
 App.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -35,17 +32,17 @@ App.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 });
-
 //setup  passports
 App.use(passport.initialize());
 App.use(passport.session());
-setuppassport();
-
+Passport_1.default();
 //routes
-App.use('/user', usersRouter);
-
-
+App.use('/user', users_1.default);
+App.get('/', (req, res) => {
+    res.send({ hi: "Hi" });
+});
 //serve static files
 App.use(express.static('./build'));
 //export App
-export default App;
+exports.default = App;
+//# sourceMappingURL=app.js.map
